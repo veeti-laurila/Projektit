@@ -39,7 +39,7 @@ void run_length_encode(char *input, size_t start, size_t end, char *output, size
     *output_size = output_index;
 }
 
-void *compress_chunk(void *arg) {
+void *compress(void *arg) {
     ThreadData * data = (ThreadData *)arg;
 
     data->output = malloc((data->end - data->start) * 2);
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
         thread_data[i].input = input;
         thread_data[i].start = i * chunk_size;
         thread_data[i].end = (i == num_threads - 1) ? file_size - 1 : (i + 1) * chunk_size - 1;
-        pthread_create(&threads[i], NULL, compress_chunk, &thread_data[i]);
+        pthread_create(&threads[i], NULL, compress, &thread_data[i]);
     }
 
     for (int i = 0; i < num_threads; i++) {
